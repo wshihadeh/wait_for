@@ -24,6 +24,24 @@ wait_for_service(){
   >&2 echo "$SERVICE is up"
 }
 
+wait_for_tcp(){
+  # var should follow the follwing strructure "$service_name:$service_ip_env_var_name:$service_port_env_var_name"
+  # for instance postgress:DATABASE_HOST:DATABASE_PORT
+
+  for var in "$@"
+    service_name=`echo $var | cut -d ':' -f1`
+    service_ip_var=`echo $var | cut -d ':' -f2`
+    service_port_var=`echo $var | cut -d ':' -f3`
+
+    if [ -z $service_ip_var ] || [ -z $service_port_var ]; then
+      echo "skipping wait for $service_name due to missing configs"
+    else
+      wait_for_service $service_ip_var $service_port_var
+    fi
+  do
+  done
+}
+
 wait_for(){
   # var should follow the follwing strructure "$service_name:$service_url_env_var_name"
   # for instance rabbitmq:RABBITMQ_URL mysql:DATABASE_URL kafka:KAFKA_HOST
@@ -49,6 +67,11 @@ case $1 in
   wait_for)
     shift
     wait_for "$@"
+  ;;
+
+  wait_for_tcp)
+    shift
+    wait_for_tcp "$@"
   ;;
 
   *) exec "$@" ;;
