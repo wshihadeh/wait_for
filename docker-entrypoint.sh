@@ -29,6 +29,7 @@ wait_for_tcp(){
   # for instance postgress:DATABASE_HOST:DATABASE_PORT
 
   for var in "$@"
+  do
     service_name=`echo $var | cut -d ':' -f1`
     service_ip_var=`echo $var | cut -d ':' -f2`
     service_port_var=`echo $var | cut -d ':' -f3`
@@ -38,7 +39,6 @@ wait_for_tcp(){
     else
       wait_for_service $service_ip_var $service_port_var
     fi
-  do
   done
 }
 
