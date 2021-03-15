@@ -33,11 +33,14 @@ wait_for_tcp(){
     service_name=`echo $var | cut -d ':' -f1`
     service_ip_var=`echo $var | cut -d ':' -f2`
     service_port_var=`echo $var | cut -d ':' -f3`
+    
+    service_ip=`printenv | grep $service_ip_var | cut -d '=' -f2-`
+    service_port=`printenv | grep $service_port_var | cut -d '=' -f2-`
 
-    if [ -z $service_ip_var ] || [ -z $service_port_var ]; then
+    if [ -z $service_ip ] || [ -z $service_port ]; then
       echo "skipping wait for $service_name due to missing configs"
     else
-      wait_for_service $service_ip_var $service_port_var
+      wait_for_service $service_ip $service_port
     fi
   done
 }
